@@ -65,36 +65,87 @@
      </head>
 	
      <body>
+        <div class="wrapper">
 
-        <header class="dashboard-header main-bg">
-            <h1>Weather Dashboard</h1>
-        </header>
+            <header class="dashboard-header main-bg">
+                <h1>Weather Dashboard</h1>
+            </header>
 
-        <main>
-            <div class="top-container fill-viewport">
-                <div class="search-container align-all-txt-cent">
-                    <!-- <h2>Enter a Location:</h2> -->
-                    <!-- <p>do something</p> -->
-                    <div class="search-bg cent-self-hz">
-                        <input id="search-field" type="text" placeholder="City, State">
-                        <div class="search-drop-down search-history-results">
-                            <button>Raleigh, NC</button>
-                            <button>Moscow, BR</button>
-                            <button>London, EN</button>
-                            <button>Hillsborough, NC</button>
+            <main>
+                <div class="top-container fill-viewport">
+                    <div class="search-container">
+                        <!-- <h2>Enter a Location:</h2> -->
+                        <!-- <p>do something</p> -->
+                        <div class="search-bg cent-self-hz">
+                            <input id="search-field" type="text" placeholder="City, State">
+                            <div class="search-drop-down search-history-results">
+                                <!-- GENERATE THESE -->
+                                <button>Raleigh, NC</button>
+                                <button>Moscow, BR</button>
+                                <button>London, EN</button>
+                                <button>Hillsborough, NC</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="current-weather-container">
-                    <div class="lg-m-hz md-p main-bg">
-                        <h2>Raleigh, NC</h2>
-                        <p>According to officials, you're ugly</p>
+
+                    <div class="current-weather-container cent-all-hz">
+                        <div class="current-weather-display md-p break-all">
+                            <!-- GENERATE THIS -->
+                            <div class="cent-all-hz sm-m-all-vt sm-m-bot">
+                                <h2>Raleigh, NC</h2>
+                                <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
+                            </div>
+                            <!-- GENERATE THESE -->
+                            <div class="sm-m-all-vt">
+                                <div class="flex-1">
+                                    <p>Temperature:</p>
+                                    <p>40°F</p>
+                                </div>
+                                <div class="flex-1">
+                                    <p>Wind Speed:</p>
+                                    <p>13mph</p>
+                                </div>
+                                <div class="flex-1">
+                                    <p>Humidity:</p>
+                                    <p>3%</p>
+                                </div>
+                                <div class="flex-1">
+                                    <p>UVI:</p>
+                                    <p>3%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="weather-card lg-m-hz hide">
+                            <!-- GENERATE THIS -->
+                            <div class="md-p main-bg">
+                                <h2>Raleigh, NC</h2>
+                                <img src="" alt="ok">
+                                <div class="md-p">
+                                    <!-- GENERATE THESE -->
+                                    <div>
+                                        <div class="space-btwn">
+                                            <p>Temperature:</p>
+                                            <p>40°F</p>
+                                        </div>
+                                        <div class="space-btwn">
+                                            <p>Wind Speed:</p>
+                                            <p>13mph</p>
+                                        </div>
+                                        <div class="space-btwn">
+                                            <p>Humidity:</p>
+                                            <p>3%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
 
-
+        </div>
 
 
         <!-- ** JS Third Party ** -->
