@@ -39,8 +39,8 @@ Handle Weather Dashboard logic
 /* ---------------- */
 /* Import Libraries */
 /* ---------------- */
-import datastore from "../../../../../tools/api/general/js/datastore-1.0.0.js";
-import PseudoEvent from "../../../../../tools/api/general/js/pseudo-events-2.1.0.js";
+import datastore from "./libs/datastore-1.0.0.js";
+import PseudoEvent from "./libs/pseudo-events-2.1.0.js";
 
 // working link: https://api.openweathermap.org/data/2.5/weather?q=Raleigh&APPID=19eecb01033710945577be8f1d9f7976
 // my api key: 594655f7cc53f85edac45ab1fd9d4a8a
