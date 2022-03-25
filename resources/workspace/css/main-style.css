@@ -38,11 +38,81 @@
 /* Global Variables */
 /* ---------------- */
 
+:root {
+    --stormBlue: #637379;
+    --rainBlue: #7b9199;
+    --sunnySkyBlue: #9fb7c0;
+}
+
 /* ------------------- */
 /* Global Declarations */
 /* ------------------- */
 
+* {
+    /* overwrite bulma */
+    line-height: normal;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    background-color: white;
+}
+
+header {
+    background-color: var(--stormBlue);
+    /* background-color: var(--rainBlue); */
+    /* background-color: var(--sunnySkyBlue); */
+    padding: 30px 0 30px 0;
+}
+
+h1 {
+    color: #fffee3;
+    text-shadow: 0 0 5px #a8a8a8;
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 4rem;
+    font-family: 'Nunito', sans-serif;
+    /* font-family: 'Source Code Pro', monospace; */
+}
+
+.search-container {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-image: url(../../assets/imgs/search-background.png);
+}
 
 
+.search-bg {
+    border-radius: 20px;
+    background-color: white;
+    padding: 15px 25px;
+    box-shadow: 0 0 10px #494949;
+}
+
+input {
+    background: none;
+    color: #c1c1c1;
+    font-size: 2.5rem;
+}
+
+/* ------------- */
+/* Media Queries */
+/* ------------- */
+
+@media screen and (max-width: 680px) {
+    h1 {
+        font-size: 3rem;
+    }
+}
+
+@media screen and (max-width: 490px) {
+    h1 {
+        font-size: 2rem;
+    }
+}
 
 
