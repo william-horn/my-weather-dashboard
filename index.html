@@ -63,36 +63,49 @@
          <!-- main styles -->
          <link rel="stylesheet" href="./resources/workspace/css/main-style.css"/>
      </head>
-     
+	
      <body>
- 
-         <div class="top-container fill-viewport start-top">
-             <header class="dashboard-header">
-                 <h1>Weather Dashboard</h1>
-             </header>
-     
-             <main class="fill-parent">
-                 <div class="search-container fill-parent cent-all-hz">
-                     <div class="search-bg">
-                         <input type="text">
-                     </div>
-                 </div>
-             </main>
-         </div>
- 
- 
- 
- 
-         <!-- ** JS Third Party ** -->
-         <!-- import jQuery -->
-         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
- 
-         <!-- load main script -->
-         <script type="module" src="./resources/workspace/js/main.js"></script>
-     </body>
- </html>
- 
- 
- 
+
+        <header class="dashboard-header main-bg">
+            <h1>Weather Dashboard</h1>
+        </header>
+
+        <main>
+            <div class="top-container fill-viewport">
+                <div class="search-container align-all-txt-cent">
+                    <!-- <h2>Enter a Location:</h2> -->
+                    <!-- <p>do something</p> -->
+                    <div class="search-bg cent-self-hz">
+                        <input id="search-field" type="text" placeholder="City, State">
+                        <div class="search-drop-down search-history-results">
+                            <button>Raleigh, NC</button>
+                            <button>Moscow, BR</button>
+                            <button>London, EN</button>
+                            <button>Hillsborough, NC</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="current-weather-container">
+                    <div class="lg-m-hz md-p main-bg">
+                        <h2>Raleigh, NC</h2>
+                        <p>According to officials, you're ugly</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+
+
+
+        <!-- ** JS Third Party ** -->
+        <!-- import jQuery -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+		<!-- load main script -->
+		<script type="module" src="./resources/workspace/js/main.js"></script>
+	</body>
+</html>
+
+
  
  

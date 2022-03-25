@@ -115,6 +115,18 @@ CSS file with classes designed for positioning, sizing, and responsiveness
     justify-content: space-between;
 }
 
+/* ----------- */
+/* Resize Self */
+/* ----------- */
+
+.full-width {
+    width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
 .half-width {
     width: 50%;
 }
@@ -142,6 +154,21 @@ CSS file with classes designed for positioning, sizing, and responsiveness
 
 .lg-p {
     padding: var(--largePadding);
+}
+
+.sm-m-hz {
+    margin-left: var(--smallMargin);
+    margin-right: var(--smallMargin);
+}
+
+.md-m-hz {
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+}
+
+.lg-m-hz {
+    margin-left: var(--largeMargin);
+    margin-right: var(--largeMargin);
 }
 
 .sm-m-all-vt > *:not(:last-child) {

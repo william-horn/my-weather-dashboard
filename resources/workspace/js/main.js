@@ -42,21 +42,6 @@ Handle Weather Dashboard logic
 import datastore from "./libs/datastore-1.0.0.js";
 import PseudoEvent from "./libs/pseudo-events-2.1.0.js";
 
-// working link: https://api.openweathermap.org/data/2.5/weather?q=Raleigh&APPID=19eecb01033710945577be8f1d9f7976
-// my api key: 594655f7cc53f85edac45ab1fd9d4a8a
-
-async function getRequest(url) {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-}
-
-const data = getRequest("https://api.openweathermap.org/data/2.5/weather?q=Raleigh,NC,US&appid=594655f7cc53f85edac45ab1fd9d4a8a");
-data.then(data => {
-    console.log("finally: ", data);
-})
-
-
 /* ------------------------- */
 /* Global Element References */
 /* ------------------------- */
@@ -64,20 +49,39 @@ data.then(data => {
 /* ----------------------- */
 /* Internal Program States */
 /* ----------------------- */
+const weatherAPIKey = "594655f7cc53f85edac45ab1fd9d4a8a";
 
 /* ---------------------- */
 /* General Util Functions */
 /* ---------------------- */
+async function getAPIRequest(url, key) {
+    const response = await fetch(url + "&appid=" + key);
+    const data = await response.json();
+    return data;
+}
 
 /* ------------------------ */
 /* Dedicated Util Functions */
 /* ------------------------ */
 
+
 /* ------------------------ */
 /* Event Callback Functions */
 /* ------------------------ */
+function init() {
+    
+    const data = getAPIRequest(
+        "https://api.openweathermap.org/data/2.5/weather?q=Raleigh,NC,US",
+        weatherAPIKey
+    );
+    
+    data.then(data => {
+        console.log("finally: ", data);
+    })
 
+}
 
 /* -------------------------- */
 /* Connect Js Event Listeners */
 /* -------------------------- */
+$(() => init()) // init program when document is ready

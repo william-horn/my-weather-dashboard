@@ -42,6 +42,13 @@
     --stormBlue: #637379;
     --rainBlue: #7b9199;
     --sunnySkyBlue: #9fb7c0;
+
+    --mainBackgroundColor: #abb2bc;
+    --mainBackgroundColorOpacity-75: #abb2bcbd;
+
+    --searchBackgroundColor: white;
+
+    --primaryFont: 'Nunito', sans-serif;
 }
 
 /* ------------------- */
@@ -53,65 +60,134 @@
     line-height: normal;
 }
 
+p {
+    color: white;
+}
+
 html {
     overflow-y: scroll;
 }
 
 body {
     background-color: white;
+    font-family: var(--primaryFont);
 }
 
 header {
-    background-color: var(--stormBlue);
+    /* background-color: var(--stormBlue); */
     /* background-color: var(--rainBlue); */
     /* background-color: var(--sunnySkyBlue); */
+    /* background-color: #2A1F1D; */ /* brown */
+    /* background-color: #BAB9BF; */ /* light gray */
+    /* background-color: #CCD3D9; */ /* light blue */
+    /* background-color: var(--mainBackgroundColor); */ /* perfect blue */
     padding: 30px 0 30px 0;
 }
 
+h1, h2 {
+    font-family: var(--primaryFont);
+    color: #f3f3f3;
+}
+
 h1 {
-    color: #fffee3;
-    text-shadow: 0 0 5px #a8a8a8;
+    /* color: #fffee3; */
+    /* color: #a3a3a3; */
+    /* text-shadow: 0 0 5px #a8a8a8; */
     font-weight: 900;
     letter-spacing: 2px;
-    font-size: 4rem;
-    font-family: 'Nunito', sans-serif;
+    font-size: 3rem;
+    font-family: system-ui;
     /* font-family: 'Source Code Pro', monospace; */
 }
 
-.search-container {
+h2 {
+    /* text-shadow: 0 0 5px #c8c8c8; */
+    color: var(--stormBlue);
+}
+
+/* --------------- */
+/* Utility Classes */
+/* --------------- */
+
+.main-bg {
+    background-color: var(--mainBackgroundColor);
+}
+
+.main-bg-75 {
+    background: var(--mainBackgroundColorOpacity-75);
+}
+
+/* ------------- */
+/* Top Container */
+/* ------------- */
+
+.top-container {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     background-image: url(../../assets/imgs/search-background.png);
 }
 
+.search-container {
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.search-drop-down {
+    display: none;
+    overflow-y: scroll;
+    position: absolute;
+    background-color: var(--searchBackgroundColor);
+    width: 100px;
+    height: 100px;
+    z-index: 10;
+    transform: translate(0, 15px);
+    width: calc(100% - 2*25px);
+}
+
+/* add class for search result buttons in js */
+.search-history-results button {
+    display: block;
+    color: #8e8e8e;
+    padding: 10px 15px;
+    background: none;
+    text-align: left;
+    width: 100%;
+}
+
+.search-history-results button:hover {
+    background-color: black;
+}
+/* add class for search result buttons in js */
+
+.search-drop-down p {
+    color: black;
+}
 
 .search-bg {
-    border-radius: 20px;
-    background-color: white;
+    /* border-radius: 20px; */
+    background-color: var(--searchBackgroundColor);
     padding: 15px 25px;
-    box-shadow: 0 0 10px #494949;
+    box-shadow: 0 0 10px #c0c0c0;
+    position: relative;
 }
 
 input {
+    padding-left: 10%;
+    padding-right: 10%;
+    text-align: center;
     background: none;
     color: #c1c1c1;
-    font-size: 2.5rem;
+    font-size: 1.7rem;
 }
 
 /* ------------- */
 /* Media Queries */
 /* ------------- */
 
-@media screen and (max-width: 680px) {
+@media screen and (min-width: 680px) {
     h1 {
-        font-size: 3rem;
-    }
-}
-
-@media screen and (max-width: 490px) {
-    h1 {
-        font-size: 2rem;
+        font-size: 4.5rem;
     }
 }
 
