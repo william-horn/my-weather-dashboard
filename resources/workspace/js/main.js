@@ -45,6 +45,15 @@ import PseudoEvent from "./libs/pseudo-events-2.1.0.js";
 /* ------------------------- */
 /* Global Element References */
 /* ------------------------- */
+// Search field elements
+const searchFieldEl = $("#search-field");
+const searchDropDownEl = $("#search-drop-down");
+const searchDropDownResultsEl = $("#search-drop-down .scroll");
+
+// Current weather display elements
+const currentWeatherDisplayEl = $("#current-weather-display");
+const weatherHeaderEl = $(currentWeatherDisplayEl).children(".weather-header");
+const weatherDataEl = $(currentWeatherDisplayEl).children(".weather-data");
 
 /* ----------------------- */
 /* Internal Program States */
@@ -63,25 +72,62 @@ async function getAPIRequest(url, key) {
 /* ------------------------ */
 /* Dedicated Util Functions */
 /* ------------------------ */
+function updateCurrentWeatherCard(weatherData) {
 
+}
+
+function generateWeatherCard(weatherData) {
+
+}
+
+function loadSearchHistory() {
+
+}
 
 /* ------------------------ */
 /* Event Callback Functions */
 /* ------------------------ */
-function init() {
-    
-    const data = getAPIRequest(
-        "https://api.openweathermap.org/data/2.5/weather?q=Raleigh,NC,US",
+
+function onSearchQuery(event) {
+    if (event.keyCode != 13) return; // if the user presses enter, continue
+
+    // unfocus the search field
+    $(searchFieldEl).blur();
+
+    // parse search request
+    const searchQuery = /(\w+)\s*,\s*(\w+)/.exec(
+        $(searchFieldEl).val().trim()
+    );
+
+    // search parameters should be in format: 'city', 'state abbrv'
+    const [searchInput, queryCity, queryState] = searchQuery;
+
+    const searchPromise = getAPIRequest(
+        `https://api.openweathermap.org/data/2.5/weather?q=${queryCity},${queryState},US`,
         weatherAPIKey
     );
+
+    console.log("Searched! Result: ");
+    searchPromise.then(data => console.log(data));
+}
+
+function onSearchFocus(event) {
+    $(searchDropDownEl).show();
+}
+
+function onSearchFocusLost(event) {
+    $(searchDropDownEl).hide();
+}
+
+function init() {
     
-    data.then(data => {
-        console.log("finally: ", data);
-    })
 
 }
 
 /* -------------------------- */
 /* Connect Js Event Listeners */
 /* -------------------------- */
+$(searchFieldEl).focusout(onSearchFocusLost);
+$(searchFieldEl).focus(onSearchFocus);
+$(searchFieldEl).keyup(onSearchQuery);
 $(() => init()) // init program when document is ready

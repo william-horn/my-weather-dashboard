@@ -245,15 +245,15 @@ CSS file with classes designed for positioning, sizing, and responsiveness
 }
 
 .sm-m-top {
-    margin-bottom: var(--smallMargin);
+    margin-top: var(--smallMargin);
 }
 
 .md-m-top {
-    margin-bottom: var(--mediumMargin);
+    margin-top: var(--mediumMargin);
 }
 
 .lg-m-top {
-    margin-bottom: var(--largeMargin);
+    margin-top: var(--largeMargin);
 }
 
 .sm-m-all-vt > *:not(:last-child) {

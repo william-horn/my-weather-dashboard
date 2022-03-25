@@ -67,76 +67,182 @@
      <body>
         <div class="wrapper">
 
-            <header class="dashboard-header main-bg">
-                <h1>Weather Dashboard</h1>
+            <header class="dashboard-header big-header second-bg">
+                <h1 class="big-heading">Weather Dashboard</h1>
             </header>
 
             <main>
-                <div class="top-container fill-viewport">
+                <div class="top-container">
                     <div class="search-container">
                         <!-- <h2>Enter a Location:</h2> -->
                         <!-- <p>do something</p> -->
                         <div class="search-bg cent-self-hz">
+                            <img class="search-icon" src="./resources/assets/imgs/mag.png" alt="">
                             <input id="search-field" type="text" placeholder="City, State">
-                            <div class="search-drop-down search-history-results">
-                                <!-- GENERATE THESE -->
-                                <button>Raleigh, NC</button>
-                                <button>Moscow, BR</button>
-                                <button>London, EN</button>
-                                <button>Hillsborough, NC</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="current-weather-container cent-all-hz">
-                        <div class="current-weather-display md-p break-all">
-                            <!-- GENERATE THIS -->
-                            <div class="cent-all-hz sm-m-all-vt sm-m-bot">
-                                <h2>Raleigh, NC</h2>
-                                <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
-                            </div>
-                            <!-- GENERATE THESE -->
-                            <div class="sm-m-all-vt">
-                                <div class="flex-1">
-                                    <p>Temperature:</p>
-                                    <p>40°F</p>
-                                </div>
-                                <div class="flex-1">
-                                    <p>Wind Speed:</p>
-                                    <p>13mph</p>
-                                </div>
-                                <div class="flex-1">
-                                    <p>Humidity:</p>
-                                    <p>3%</p>
-                                </div>
-                                <div class="flex-1">
-                                    <p>UVI:</p>
-                                    <p>3%</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="weather-card lg-m-hz hide">
-                            <!-- GENERATE THIS -->
-                            <div class="md-p main-bg">
-                                <h2>Raleigh, NC</h2>
-                                <img src="" alt="ok">
-                                <div class="md-p">
+                            <img class="menu-icon" src="./resources/assets/imgs/menu-icon-2.png" alt="">
+                            <div id="search-drop-down" class="search-drop-down search-history-results">
+                                <div class="scroll">
                                     <!-- GENERATE THESE -->
+                                    <button>Raleigh, NC</button>
+                                    <button>Moscow, BR</button>
+                                    <button>London, EN</button>
+                                    <button>Hillsborough, NC</button>
+                                    <button>Raleigh, NC</button>
+                                    <button>Moscow, BR</button>
+                                    <button>London, EN</button>
+                                    <button>Hillsborough, NC</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="current-weather-container cent-all-hz">
+                            <div id="current-weather-display" class="current-weather-display break-all">
+    
+                                <div class="weather-header cent-all-hz lg-m-bot">
+                                    <h2>Raleigh, NC</h2>
+                                    <p>03/25/2022</p>
+                                    <img class="weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
+                                </div>
+    
+                                <div class="weather-data">
                                     <div>
-                                        <div class="space-btwn">
-                                            <p>Temperature:</p>
-                                            <p>40°F</p>
-                                        </div>
-                                        <div class="space-btwn">
-                                            <p>Wind Speed:</p>
-                                            <p>13mph</p>
-                                        </div>
-                                        <div class="space-btwn">
-                                            <p>Humidity:</p>
-                                            <p>3%</p>
-                                        </div>
+                                        <p>Temperature:</p>
+                                        <p>40°F</p>
                                     </div>
+                                    <div>
+                                        <p>Wind Speed:</p>
+                                        <p>13mph</p>
+                                    </div>
+                                    <div>
+                                        <p>Humidity:</p>
+                                        <p>3%</p>
+                                    </div>
+                                    <div>
+                                        <p>UVI:</p>
+                                        <p>3%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="forecast-container">
+                    <header class="big-header second-bg">
+                        <h2 class="big-heading">5-Day Forecast</h2>
+                    </header>
+
+                    <div class="container">
+
+                        <!-- GENERATE THESE -->
+                        <div class="weather-card">
+                            <div class="cent-all-hz">
+                                <h3>03/26/2022</h3>
+                                <img class="weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
+                            </div>
+                            <div class="weather-data">
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GENERATE THESE -->
+                        <div class="weather-card">
+                            <div class="cent-all-hz">
+                                <h3>03/26/2022</h3>
+                                <img class="weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
+                            </div>
+                            <div class="weather-data">
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GENERATE THESE -->
+                        <div class="weather-card">
+                            <div class="cent-all-hz">
+                                <h3>03/26/2022</h3>
+                                <img class="weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
+                            </div>
+                            <div class="weather-data">
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GENERATE THESE -->
+                        <div class="weather-card">
+                            <div class="cent-all-hz">
+                                <h3>03/26/2022</h3>
+                                <img class="weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
+                            </div>
+                            <div class="weather-data">
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GENERATE THESE -->
+                        <div class="weather-card">
+                            <div class="cent-all-hz">
+                                <h3>03/26/2022</h3>
+                                <img class="weather-icon" src="http://openweathermap.org/img/wn/10d@2x.png" alt="ok">
+                            </div>
+                            <div class="weather-data">
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
+                                </div>
+                                <div>
+                                    <p>Temperature:</p>
+                                    <p>sum</p>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +251,20 @@
                 </div>
             </main>
 
+            <footer>
+                <div class="big-header">
+                    <h2 class="big-heading">Contact Me</h2>
+                    <p>Any issues with the website? Contact me here:</p>
+                </div>
+
+                <div class="container">
+                    <p>Phone Number: 919-999-9999</p>
+                    <p>Email: williamjosephhorn@gmail.com</p>
+                </div>
+            </footer>
+
         </div>
+
 
 
         <!-- ** JS Third Party ** -->
@@ -156,6 +275,8 @@
 		<script type="module" src="./resources/workspace/js/main.js"></script>
 	</body>
 </html>
+
+
 
 
  
