@@ -17,7 +17,15 @@
 | ABOUT DOCUMENT |
 ==================================================================================================================================
 
-Handle Weather Dashboard logic
+This program handles the main Weather Dashboard logic.
+
+* Technologies used:
+    - jQuery
+    - openweathermap API
+    - Google Fonts API
+
+* openweatherapp API key:
+    - 594655f7cc53f85edac45ab1fd9d4a8a
 
 ==================================================================================================================================
 
