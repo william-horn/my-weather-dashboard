@@ -372,6 +372,11 @@ footer .container p {
     width: 100%;
 }
 
+#current-uvi {
+    font-weight: 900;
+    text-shadow: none;
+}
+
 /* ------------- */
 /* Media Queries */
 /* ------------- */
