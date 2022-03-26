@@ -74,12 +74,14 @@ let globalCurrentTime;
 // let lastSearchInput;
 
 // create localstorage datakey name(s)
-datastore.datakeys.searchHistory = "search-history";
+const datakeys = datastore.datakeys;
+datakeys.searchHistory = "search-history";
 
 // configurable search settings
 const searchSettings = {
     historyLength: 10, // maximum number of search results that will be saved
     defaultCountry: "US", // if no country input is given, default to US
+    searchHistory: datastore.get(datakeys.searchHistory, []),
 
     // responsive messages
     loadingMessage: "Searching",
@@ -147,7 +149,7 @@ function updateCurrentWeatherCard(weatherData) {
     $(uviEl).text(weatherData.uvi);
     $(humidityEl).text(weatherData.humidity);
 
-    $(currentWeatherDisplayEl).toggleClass("fade-in");
+    $(currentWeatherDisplayEl).addClass("fade-in");
 }
 
 // create weather forecast card
@@ -214,12 +216,23 @@ function generateWeatherCards(weatherData) {
     })
 }
 
+// generate search result buttons
 function loadSearchHistory() {
+    $(searchDropDownResultsEl).empty(); // clear search result buttons
 
-}
+    // retrieve search history
+    const resultData = datastore.get(datakeys.searchHistory);
 
-function addSearchQueryToHistory(query, data) {
+    // traverse search history and generate search result buttons
+    for (let index = 0; index < resultData.length; index++) {
+        const result = resultData[index];
+        const resultFormatted = `${result.cityName}, ${result.stateName}, ${result.countryName}`;
 
+        const buttonEl = $(`<button>${resultFormatted}</button>`);
+
+        $(buttonEl).addClass("search-result-button");
+        $(searchDropDownResultsEl).append(buttonEl);
+    }
 }
 
 function getFormattedWeatherStats(temp, windSpeed, humidity) {
@@ -243,7 +256,7 @@ function getDailyForecastData(forecastData) {
         dailyForecast[index] = {
             date: new Date(dayWeather.dt*1000),
             temp: temp,
-            windSpeed: ~~windSpeed,
+            windSpeed: windSpeed,
             humidity: humidity,
             icon: dayWeather.weather[0].icon
         }
@@ -252,11 +265,25 @@ function getDailyForecastData(forecastData) {
     return dailyForecast;
 }
 
+// save recent search result to local storage
+function addSearchQueryToHistory(searchData) {
+    datastore.update(datakeys.searchHistory, data => {
+        // if new search data is the same as the most recent, don't update
+        if (data[0].id === searchData.id) return data;
+
+        // update search history
+        data.unshift(searchData);
+        if (data.length > searchSettings.historyLength) data.pop();
+        return data;
+    });
+}
+
 // process search request
-function processSearchQuery(input) {
+function processSearchQuery(input, addToHistory=true) {
 
     // parse search request for 'CityName, StateName'
-    const searchQuery = /(\w+)\s*,\s*(\w+),?\s*(\w*)/.exec(input.trim());
+    // const searchQuery = /(\w+)\s*,\s*(\w+),?\s*(\w*)/.exec(input.trim());
+    const searchQuery = /([^,]+),\s*([^,]+),?\s*(\w*)/.exec(input.trim()); // regex search filter
 
     // if search query is invalid then exit
     if (!searchQuery) {
@@ -268,6 +295,7 @@ function processSearchQuery(input) {
     // reset placeholder to default
     $(searchFieldEl).attr("placeholder", searchSettings.defaultMessage);
     let [searchInput, queryCity, queryState, queryCountry] = searchQuery;
+    [queryCity, queryState, queryCountry] = [queryCity.trim(), queryState.trim(), queryCountry.trim()]; // remove unnecessary spaces
 
     // select default country if none is defined
     queryCountry = queryCountry || searchSettings.defaultCountry;
@@ -301,6 +329,7 @@ function processSearchQuery(input) {
         }
 
         // re-format local weather data
+        // commented-out fields are added later on (below) before object is used
         const localWeatherData = {
             // icon: localWeather.weather[0].icon,
             // windSpeed: ~~localWeather.wind.speed,
@@ -322,6 +351,7 @@ function processSearchQuery(input) {
             // add uv index to localWeatherData before updating the local weather
             localWeatherData.uvi = forecastData.current.uvi;
             localWeatherData.icon = forecastData.current.weather[0].icon;
+            localWeatherData.timezone = forecastData.timezone;
 
             // format weather data with degrees, mph, and %
             [
@@ -339,10 +369,18 @@ function processSearchQuery(input) {
             generateWeatherCards(getDailyForecastData(forecastData));
 
             // stop animation for initial request 
-            cancelLoadingAnim(`${localWeatherData.cityName}, ${queryState}, ${localWeatherData.countryName}`);
+            const searchId = `${localWeatherData.cityName}, ${queryState}, ${localWeatherData.countryName}`;
+            cancelLoadingAnim(searchId);
 
             // add search results to history
-            addSearchQueryToHistory();
+            if (addToHistory) {
+                addSearchQueryToHistory({
+                    id: searchId,
+                    cityName: localWeatherData.cityName,
+                    stateName: queryState,
+                    countryName: localWeatherData.countryName
+                });
+            }
         });
 
     });
@@ -351,6 +389,15 @@ function processSearchQuery(input) {
 /* ------------------------ */
 /* Event Callback Functions */
 /* ------------------------ */
+
+function onSearchResultClicked(event) {
+    event.stopPropagation(); // prevent unnecessary event bubbling
+    const target = event.target;
+
+    if ($(target).hasClass("search-result-button")) {
+        processSearchQuery($(searchFieldEl).val($(target).text()).val());
+    }
+}
 
 function onSearchQuery(event) {
     if (event.keyCode != 13) return; // if the user presses enter, continue
@@ -363,6 +410,7 @@ function onSearchQuery(event) {
 function onSearchFocus(event) {
     $(searchDropDownEl).show();
     $(searchFieldEl).val("");
+    loadSearchHistory();
 }
 
 function onSearchFocusLost(event) {
@@ -384,12 +432,13 @@ function init() {
     onClockTick(new Date());
 
 
-    processSearchQuery("Raleigh, NC, US");
+    processSearchQuery("Raleigh, NC, US", false);
 
     // start clock tick event
     setInterval(() => onClockTick(new Date()), 1000);
 
     // connect event listeners
+    $(searchDropDownEl).on("mousedown", onSearchResultClicked);
     $(searchFieldEl).focusout(onSearchFocusLost);
     $(searchFieldEl).focus(onSearchFocus);
     $(searchFieldEl).keyup(onSearchQuery);
