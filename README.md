@@ -7,11 +7,11 @@ Welcome to **My Weather Dashboard**! This app allows you to search for a city wi
 <a href="https://william-horn.github.io/my-weather-dashboard/"><img src="./resources/assets/imgs/weather-dash-1.jpg"></a>
 
 ## **Getting Started**
-#
+
 Getting started is simple. Just click on the search field and enter any valid city name and abbreviated state name. For example, if I wanted to get the weather in Raleigh, North Carolina, I would search `Raleigh, NC`.
 
 ## **Search Behaviors**
-#
+
 * Non-case-sensitive (Capitalization doesn't matter)
 * Country defaults to US if none is specified
 * Search algorithm looks for other countries if it can't find a match in the specified country
@@ -21,7 +21,7 @@ Getting started is simple. Just click on the search field and enter any valid ci
 * Search queries are saved to a maximum of 10 records
 
 ## **Other Behaviors**
-#
+
 
 ## 5-Day Forecast
 
@@ -33,10 +33,9 @@ As previously mentioned, My Weather Dashboard also gives you the 5-day forecast 
 
 My Weather Dashboard was designed with mobile-first in mind! This means you can easily access and use this application from any device with ease.
 
-<img src="./resources/assets/imgs/weather-dash-3.png" width="200px" height="375px">
-<img src="./resources/assets/imgs/weather-dash-4.png" width="200px" height="375px">
+<img src="./resources/assets/imgs/weather-dash-3.png" width="200px" height="375px" display="inline-block">
+<img src="./resources/assets/imgs/weather-dash-4.png" width="200px" height="375px" display="inline-block">
 
-#
 
 ## **Technologies Used**
 
