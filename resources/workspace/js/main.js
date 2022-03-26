@@ -71,6 +71,7 @@ let weatherCardContainerEl;
 
 // keep reference to the current global time (updated onClickTick, or every second)
 let globalCurrentTime;
+let currentTimezone;
 // let lastSearchInput;
 
 // create localstorage datakey name(s)
@@ -355,7 +356,9 @@ function processSearchQuery(input, addToHistory=true) {
             // add uv index to localWeatherData before updating the local weather
             localWeatherData.uvi = forecastData.current.uvi;
             localWeatherData.icon = forecastData.current.weather[0].icon;
-            localWeatherData.timezone = forecastData.timezone;
+            localWeatherData.timezone = forecastData.timezone.replaceAll("_", " ");
+            currentTimezone = localWeatherData.timezone;
+            onClockTick();
 
             // format weather data with degrees, mph, and %
             [
@@ -421,9 +424,10 @@ function onSearchFocusLost(event) {
     $(searchDropDownEl).hide();
 }
 
-function onClockTick(currentTime) {
+function onClockTick() {
+    const currentTime = new Date();
     globalCurrentTime = currentTime;
-    $(currentTimeEl).text(currentTime.toLocaleString());
+    $(currentTimeEl).text(currentTime.toLocaleString() + (currentTimezone ? ` (${currentTimezone})` : ""));
 }
 
 // initiate program
@@ -433,13 +437,13 @@ function init() {
     loadHTMLElements();
 
     // immediately update global time
-    onClockTick(new Date());
+    onClockTick();
 
     // show user a test search
     processSearchQuery("Raleigh, NC, US", false);
 
     // start clock tick event
-    setInterval(() => onClockTick(new Date()), 1000);
+    setInterval(onClockTick, 1000);
 
     // connect event listeners
     $(searchDropDownEl).on("mousedown", onSearchResultClicked);

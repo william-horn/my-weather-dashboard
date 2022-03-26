@@ -260,6 +260,9 @@ h3 {
 .weather-header p {
     font-size: 1.5rem;
     font-weight: 400;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: center;
 }
 
 .weather-header h2 {
