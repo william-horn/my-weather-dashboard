@@ -7,7 +7,7 @@
 ? @author:                 William J. Horn
 ? @document-name:          main.js
 ? @document-created:       03/24/2022
-? @document-modified:      03/24/2022
+? @document-modified:      03/26/2022
 ? @document-version:       v1.0.0
 
 ==================================================================================================================================
@@ -23,6 +23,7 @@ This program handles the main Weather Dashboard logic.
     - jQuery
     - openweathermap API
     - Google Fonts API
+    - mah brain
 
 * openweatherapp API key:
     - 594655f7cc53f85edac45ab1fd9d4a8a
@@ -40,6 +41,8 @@ This program handles the main Weather Dashboard logic.
 =================
 | DOCUMENT TODO |
 ==================================================================================================================================
+
+- Cache recent search results?
 
 ==================================================================================================================================
 */
@@ -148,6 +151,7 @@ function updateCurrentWeatherCard(weatherData) {
     $(tempEl).text(weatherData.temp);
     $(windSpeedEl).text(weatherData.windSpeed);
     $(uviEl).text(weatherData.uvi);
+    $(uviEl).css("color", calcUVIndexColor(weatherData.uvi));
     $(humidityEl).text(weatherData.humidity);
 
     $(currentWeatherDisplayEl).addClass("fade-in");
@@ -239,6 +243,25 @@ function loadSearchHistory() {
         $(buttonEl).addClass("search-result-button");
         $(searchDropDownResultsEl).append(buttonEl);
     }
+}
+
+// make-shift uvi color converter
+function calcUVIndexColor(uvi) {
+    // colors to transition between (green being a safe uvi, red being bad)
+    const c_i = {r: 0, g: 255, b: 0};    // color initial
+    const c_f   = {r: 255, g: 0, b: 0};  // color final
+
+    const scale = uvi/7; // magic number 7 for big uvi
+    const inv = (1 - scale);
+
+    // oof, maybe make a tweening library soon...
+    const prod = {
+        r: c_i.r*inv + c_f.r*scale,
+        g: c_i.g*inv + c_f.g*scale,
+        b: c_i.b*inv + c_f.b*scale
+    }
+
+    return `rgb(${prod.r}, ${prod.g}, ${prod.b})`;
 }
 
 function getFormattedWeatherStats(temp, windSpeed, humidity) {
@@ -357,6 +380,10 @@ function processSearchQuery(input, addToHistory=true) {
             localWeatherData.uvi = forecastData.current.uvi;
             localWeatherData.icon = forecastData.current.weather[0].icon;
             localWeatherData.timezone = forecastData.timezone.replaceAll("_", " ");
+
+            console.log("uv color:", calcUVIndexColor(localWeatherData.uvi));
+
+            // update timezone data
             currentTimezone = localWeatherData.timezone;
             onClockTick();
 
