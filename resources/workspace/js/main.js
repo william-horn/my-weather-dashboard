@@ -75,7 +75,7 @@ let globalCurrentTime;
 
 // create localstorage datakey name(s)
 const datakeys = datastore.datakeys;
-datakeys.searchHistory = "search-history";
+datakeys.searchHistory = "weatherdash:search-history";
 
 // configurable search settings
 const searchSettings = {
@@ -221,14 +221,19 @@ function loadSearchHistory() {
     $(searchDropDownResultsEl).empty(); // clear search result buttons
 
     // retrieve search history
-    const resultData = datastore.get(datakeys.searchHistory);
+    const resultData = datastore.get(datakeys.searchHistory, []);
+
+    // default if no previous search results exist
+    if (resultData.length === 0) {
+        resultData[0] = {
+            id: "No previous search results yet"
+        }
+    }
 
     // traverse search history and generate search result buttons
     for (let index = 0; index < resultData.length; index++) {
         const result = resultData[index];
-        const resultFormatted = `${result.cityName}, ${result.stateName}, ${result.countryName}`;
-
-        const buttonEl = $(`<button>${resultFormatted}</button>`);
+        const buttonEl = $(`<button>${result.id}</button>`);
 
         $(buttonEl).addClass("search-result-button");
         $(searchDropDownResultsEl).append(buttonEl);
@@ -269,7 +274,7 @@ function getDailyForecastData(forecastData) {
 function addSearchQueryToHistory(searchData) {
     datastore.update(datakeys.searchHistory, data => {
         // if new search data is the same as the most recent, don't update
-        if (data[0].id === searchData.id) return data;
+        if (data.length > 0 && data[0].id === searchData.id) return data;
 
         // update search history
         data.unshift(searchData);
@@ -347,7 +352,6 @@ function processSearchQuery(input, addToHistory=true) {
 
         // second weather api request (for getting daily forecasts)
         forecastRequest.then(forecastData => {
-            console.log(forecastData);
             // add uv index to localWeatherData before updating the local weather
             localWeatherData.uvi = forecastData.current.uvi;
             localWeatherData.icon = forecastData.current.weather[0].icon;
@@ -431,7 +435,7 @@ function init() {
     // immediately update global time
     onClockTick(new Date());
 
-
+    // show user a test search
     processSearchQuery("Raleigh, NC, US", false);
 
     // start clock tick event
@@ -448,3 +452,5 @@ function init() {
 /* Initiate Program on Document Ready */
 /* ---------------------------------- */
 $(() => init()) // init program when document is ready
+
+
