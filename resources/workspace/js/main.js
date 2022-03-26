@@ -53,29 +53,39 @@ import gutil from "./libs/gutil-1.0.0.js";
 /* ------------------------- */
 /* Global Element References */
 /* ------------------------- */
-// Search field elements
-const searchFieldEl = $("#search-field");
-const searchDropDownEl = $("#search-drop-down");
-const searchDropDownResultsEl = $("#search-drop-down .scroll");
+// Initialize HTML element refs
+let searchFieldEl;
+let searchDropDownEl;
+let searchDropDownResultsEl;
 
-// Current weather display elements
-const currentWeatherDisplayEl = $("#current-weather-display");
-const weatherHeaderEl = $(currentWeatherDisplayEl).children(".weather-header");
-const weatherDataEl = $(currentWeatherDisplayEl).children(".weather-data");
+let currentWeatherDisplayEl;
+let weatherHeaderEl;
+let weatherDataEl;
+let currentTimeEl;
 
-const weatherCardContainerEl = $("#weather-card-container");
+let weatherCardContainerEl;
 
 /* ----------------------- */
 /* Internal Program States */
 /* ----------------------- */
+
+// keep reference to the current global time (updated onClickTick, or every second)
+let globalCurrentTime;
+// let lastSearchInput;
+
 // create localstorage datakey name(s)
 datastore.datakeys.searchHistory = "search-history";
 
+// configurable search settings
 const searchSettings = {
     historyLength: 10, // maximum number of search results that will be saved
+    defaultCountry: "US", // if no country input is given, default to US
+
+    // responsive messages
     loadingMessage: "Searching",
     errorMessage: "Invalid entry",
-    defaultMessage: "City, State",
+    defaultMessage: "City, State, Country",
+    nullRequestMessage: "Could not find location"
 }
 
 // store api data
@@ -104,6 +114,23 @@ async function getAPIRequest(apiName, query) {
 /* ------------------------ */
 /* Dedicated Util Functions */
 /* ------------------------ */
+
+// load initial element refs
+function loadHTMLElements() {
+    // search field elements
+    searchFieldEl = $("#search-field");
+    searchDropDownEl = $("#search-drop-down");
+    searchDropDownResultsEl = $("#search-drop-down .scroll");
+
+    // current weather display elements
+    currentWeatherDisplayEl = $("#current-weather-display");
+    weatherHeaderEl = $(currentWeatherDisplayEl).children(".weather-header");
+    weatherDataEl = $(currentWeatherDisplayEl).children(".weather-data");
+    currentTimeEl = $(weatherHeaderEl).children("p");
+
+    weatherCardContainerEl = $("#weather-card-container");
+}
+
 // update current-day local weather 
 function updateCurrentWeatherCard(weatherData) {
     const weatherIconEl = $(weatherHeaderEl).children(".weather-icon");
@@ -115,12 +142,15 @@ function updateCurrentWeatherCard(weatherData) {
 
     $(weatherIconEl).attr("src", apis.openweathermap.getImgUrl(weatherData.icon));
     $(cityNameEl).text(weatherData.cityName);
-    $(tempEl).text(weatherData.temp + "°F");
-    $(windSpeedEl).text(weatherData.windSpeed + "mph");
+    $(tempEl).text(weatherData.temp);
+    $(windSpeedEl).text(weatherData.windSpeed);
     $(uviEl).text(weatherData.uvi);
-    $(humidityEl).text(weatherData.humidity + "%");
+    $(humidityEl).text(weatherData.humidity);
+
+    $(currentWeatherDisplayEl).toggleClass("fade-in");
 }
 
+// create weather forecast card
 function createWeatherCard(weatherData) {
     // construct weather card
     const weatherCardEl = $("<div class=\"weather-card\">");
@@ -138,10 +168,12 @@ function createWeatherCard(weatherData) {
     const humidEl = $("<p>");
 
     // display data settings to elements
-    $(tempEl).text(weatherData.temp + "°F");
-    $(windSpeedEl).text(weatherData.windSpeed + "mph");
-    $(humidEl).text(weatherData.humidity + "%");
-    $(forecastIconEl).attr("src", apis.openweathermap.getImgUrl(weather.icon));
+    $(tempEl).text(weatherData.temp);
+    $(windSpeedEl).text(weatherData.windSpeed);
+    $(humidEl).text(weatherData.humidity);
+    $(forecastIconEl).attr("src", apis.openweathermap.getImgUrl(weatherData.icon));
+    $(forecastDateEl).text(weatherData.date.toLocaleDateString());
+    $(forecastIconEl).css("background-color", "#cccccc");
 
     // append elements to weather card body
     $(sec1).append("<p>Temperature:</p>").append(tempEl);
@@ -160,15 +192,26 @@ function createWeatherCard(weatherData) {
     $(weatherCardEl).append(weatherCardHeadEl);
     $(weatherCardEl).append(weatherCardBodyEl);
 
-
+    // return weather card
+    return weatherCardEl;
 }
 
+// generate weather forecast cards
 function generateWeatherCards(weatherData) {
     $(weatherCardContainerEl).empty(); // clear old weather cards
+    const cards = [];
 
-    gutil.forInterval(1, 5, 1, 500, index => {
+    // create cards
+    for (let index = 1; index < 6; index++) {
+        const weatherCardEl = createWeatherCard(weatherData[index]);
+        $(weatherCardContainerEl).append(weatherCardEl);
+        cards[index] = weatherCardEl;
+    };
 
-    });
+    // animate cards to fade-in
+    gutil.forInterval(0, cards.length, 1, 500, index => {
+        $(cards[index]).addClass("fade-in");
+    })
 }
 
 function loadSearchHistory() {
@@ -179,25 +222,60 @@ function addSearchQueryToHistory(query, data) {
 
 }
 
+function getFormattedWeatherStats(temp, windSpeed, humidity) {
+    return [temp + "°F", windSpeed + "mph", humidity + "%"];
+}
+
+// get formatted daily forecast data
+function getDailyForecastData(forecastData) {
+    const dailyForecast = [];
+
+    for (let index = 0; index < forecastData.daily.length; index++) {
+        const dayWeather = forecastData.daily[index];
+
+        // format weather data in degrees, mph, and %
+        const [temp, windSpeed, humidity] = getFormattedWeatherStats(
+            dayWeather.temp.day,
+            dayWeather.wind_speed,
+            dayWeather.humidity
+        );
+
+        dailyForecast[index] = {
+            date: new Date(dayWeather.dt*1000),
+            temp: temp,
+            windSpeed: ~~windSpeed,
+            humidity: humidity,
+            icon: dayWeather.weather[0].icon
+        }
+    }
+
+    return dailyForecast;
+}
+
+// process search request
 function processSearchQuery(input) {
 
     // parse search request for 'CityName, StateName'
-    const searchQuery = /(\w+)\s*,\s*(\w+)/.exec(input.trim());
+    const searchQuery = /(\w+)\s*,\s*(\w+),?\s*(\w*)/.exec(input.trim());
 
     // if search query is invalid then exit
     if (!searchQuery) {
         $(searchFieldEl).attr("placeholder", searchSettings.errorMessage).val("");
+        $(searchFieldEl).focus();
         return;
     }
 
     // reset placeholder to default
     $(searchFieldEl).attr("placeholder", searchSettings.defaultMessage);
-    const [searchInput, queryCity, queryState] = searchQuery;
+    let [searchInput, queryCity, queryState, queryCountry] = searchQuery;
+
+    // select default country if none is defined
+    queryCountry = queryCountry || searchSettings.defaultCountry;
 
     // make async request to openweathermap for initial weather and location data
     const weatherLocationRequest = getAPIRequest(
         "openweathermap", 
-        `weather?q=${queryCity},${queryState},US`
+        `weather?q=${queryCity},${queryState},${queryCountry}`
     );
 
     // loading animation on search bar
@@ -205,48 +283,66 @@ function processSearchQuery(input) {
         $(searchFieldEl).val(searchSettings.loadingMessage + ([".", "..", "..."])[num%3]);
     });
 
+    // cancel load animation when necessary
+    function cancelLoadingAnim(message, refocus) {
+        clearInterval(waitInterval);
+        $(searchFieldEl).val(message || "");
+        if (refocus) $(searchFieldEl).focus();
+    }
+
     // local weather data JSON parsing callback
     weatherLocationRequest.then(localWeather => {
-        const localWeatherData = {
-            icon: localWeather.weather[0].icon,
-            windSpeed: ~~localWeather.wind.speed,
-            temp: ~~localWeather.main.temp,
-            cityName: localWeather.name,
-            humidity: localWeather.main.humidity
-        };
 
-        console.log(localWeather);
+        // if location doesn't exist, handle error
+        if (localWeather.cod === "404") {
+            $(searchFieldEl).attr("placeholder", searchSettings.nullRequestMessage);
+            setTimeout(() => cancelLoadingAnim(null, true), 1000);
+            return;
+        }
+
+        // re-format local weather data
+        const localWeatherData = {
+            // icon: localWeather.weather[0].icon,
+            // windSpeed: ~~localWeather.wind.speed,
+            // temp: ~~localWeather.main.temp,
+            cityName: localWeather.name,
+            countryName: localWeather.sys.country,
+            // humidity: localWeather.main.humidity
+        };
 
         // make second request for forecast
         const forecastRequest = getAPIRequest(
             "openweathermap",
-            `onecall?lat=${localWeather.coord.lat}&lon=${localWeather.coord.lon}`
+            `onecall?lat=${localWeather.coord.lat}&lon=${localWeather.coord.lon}&exclude=hourly,minutely`
         )
 
+        // second weather api request (for getting daily forecasts)
         forecastRequest.then(forecastData => {
+            console.log(forecastData);
             // add uv index to localWeatherData before updating the local weather
             localWeatherData.uvi = forecastData.current.uvi;
+            localWeatherData.icon = forecastData.current.weather[0].icon;
+
+            // format weather data with degrees, mph, and %
+            [
+                localWeatherData.temp, 
+                localWeatherData.windSpeed,
+                localWeatherData.humidity
+            ] = getFormattedWeatherStats(
+                forecastData.current.temp,
+                forecastData.current.wind_speed,
+                forecastData.current.humidity
+            );
+            
+            // update current weather & 5-day forecast weather
             updateCurrentWeatherCard(localWeatherData);
-
-            const forecastWeatherData = {
-
-            }
+            generateWeatherCards(getDailyForecastData(forecastData));
 
             // stop animation for initial request 
-            clearInterval(waitInterval);
-            $(searchFieldEl).val(`${queryCity}, ${queryState}`);
+            cancelLoadingAnim(`${localWeatherData.cityName}, ${queryState}, ${localWeatherData.countryName}`);
 
             // add search results to history
-            addSearchQueryToHistory({
-                query: searchInput,
-                cityName: queryCity,
-                stateName: queryState
-            }, {
-                localWeather: localWeatherData,
-                forecastWeather: forecastData
-            });
-
-            console.log("Forecast:", forecastData);
+            addSearchQueryToHistory();
         });
 
     });
@@ -266,21 +362,40 @@ function onSearchQuery(event) {
 
 function onSearchFocus(event) {
     $(searchDropDownEl).show();
+    $(searchFieldEl).val("");
 }
 
 function onSearchFocusLost(event) {
     $(searchDropDownEl).hide();
 }
 
-function init() {
-    
-
+function onClockTick(currentTime) {
+    globalCurrentTime = currentTime;
+    $(currentTimeEl).text(currentTime.toLocaleString());
 }
 
-/* -------------------------- */
-/* Connect Js Event Listeners */
-/* -------------------------- */
-$(searchFieldEl).focusout(onSearchFocusLost);
-$(searchFieldEl).focus(onSearchFocus);
-$(searchFieldEl).keyup(onSearchQuery);
+// initiate program
+// this function should only run once
+function init() {
+    // assign global elements
+    loadHTMLElements();
+
+    // immediately update global time
+    onClockTick(new Date());
+
+
+    processSearchQuery("Raleigh, NC, US");
+
+    // start clock tick event
+    setInterval(() => onClockTick(new Date()), 1000);
+
+    // connect event listeners
+    $(searchFieldEl).focusout(onSearchFocusLost);
+    $(searchFieldEl).focus(onSearchFocus);
+    $(searchFieldEl).keyup(onSearchQuery);
+}
+
+/* ---------------------------------- */
+/* Initiate Program on Document Ready */
+/* ---------------------------------- */
 $(() => init()) // init program when document is ready

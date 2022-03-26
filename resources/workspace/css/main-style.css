@@ -112,6 +112,19 @@ h3 {
     word-break: break-all;
 }
 
+.invisible {
+    opacity: 0;
+}
+
+.fade-in {
+    animation: fadeIn ease 2s forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0 }
+    100% { opacity: 1 }
+}
+
 /* ------------- */
 /* Top Container */
 /* ------------- */
@@ -221,6 +234,7 @@ h3 {
 
 .current-weather-display {
     width: 100%;
+    opacity: 0;
 }
 
 .current-weather-display p, .weather-data p {
@@ -283,6 +297,7 @@ h3 {
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 20px;
+    opacity: 0;
 }
 
 .weather-card .weather-icon {
