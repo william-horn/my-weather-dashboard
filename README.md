@@ -23,15 +23,15 @@ Getting started is simple. Just click on the search field and enter any valid ci
 ## **Other Behaviors**
 
 
-## 5-Day Forecast
+* **5-Day Forecast**
 
-As previously mentioned, My Weather Dashboard also gives you the 5-day forecast of a given location! The layout will look something like this:
+    - As previously mentioned, My Weather Dashboard also gives you the 5-day forecast of a given location! The layout will look something like this:
 
 <img src="./resources/assets/imgs/weather-dash-2.png">
 
-## Mobile First!
+* **Mobile First!**
 
-My Weather Dashboard was designed with mobile-first in mind! This means you can easily access and use this application from any device with ease.
+    - My Weather Dashboard was designed with mobile-first in mind! This means you can easily access and use this application from any device with ease. Here's an example:
 
 <img src="./resources/assets/imgs/weather-dash-3.png" width="200px" height="375px" display="inline-block">
 <img src="./resources/assets/imgs/weather-dash-4.png" width="200px" height="375px" display="inline-block">
@@ -39,7 +39,7 @@ My Weather Dashboard was designed with mobile-first in mind! This means you can 
 
 ## **Technologies Used**
 
-My Weather Dashboard is made mostly from scratch, but it was made much easier with the help of **jQuery** and **Google Fonts API**!
+My Weather Dashboard is made mostly from scratch, but it was made much easier with the help of [**jQuery**](https://jquery.com/), [**Google Fonts API**](https://fonts.google.com/), and of course, the [**openweathermap API**](https://openweathermap.org/api) that made all of this possible!
 
 ## **Bugs**
 
