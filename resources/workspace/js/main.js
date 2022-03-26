@@ -429,7 +429,7 @@ function onSearchResultClicked(event) {
     const target = event.target;
 
     if ($(target).hasClass("search-result-button")) {
-        processSearchQuery($(searchFieldEl).val($(target).text()).val());
+        processSearchQuery($(searchFieldEl).val($(target).text()).val(), false);
     }
 }
 
