@@ -7,7 +7,7 @@
 ? @author:                 William J. Horn
 ? @document-name:          main.js
 ? @document-created:       03/24/2022
-? @document-modified:      03/26/2022
+? @document-modified:      03/28/2022
 ? @document-version:       v1.0.0
 
 ==================================================================================================================================
@@ -72,9 +72,21 @@ let weatherCardContainerEl;
 /* Internal Program States */
 /* ----------------------- */
 
-// keep reference to the current global time (updated onClickTick, or every second)
-let globalCurrentTime;
-let currentTimezone;
+// create clock object for adjusting to different timezones
+const clock = {
+    timezone: '',
+    timezoneOffset: new Date().getTimezoneOffset(),
+
+    getLocalTime() {
+        return new Date(new Date().getTime() + this.timezoneOffset*1000);
+    },
+
+    update() {
+        const time = this.getLocalTime();
+        $(currentTimeEl).text(time.toUTCString() + " (" + this.timezone + ")");
+    }
+
+}
 // let lastSearchInput;
 
 // create localstorage datakey name(s)
@@ -110,6 +122,7 @@ const apis = {
 /* ---------------------- */
 /* General Util Functions */
 /* ---------------------- */
+// general api request
 async function getAPIRequest(apiName, query) {
     const api = apis[apiName];
     const response = await fetch(api.root + query + api.default + api.apiKey);
@@ -124,7 +137,7 @@ async function getAPIRequest(apiName, query) {
 // load initial element refs
 function loadHTMLElements() {
     // search field elements
-    searchFieldEl = $("#search-field");
+    searchFieldEl = $("#weather-search-field");
     searchDropDownEl = $("#search-drop-down");
     searchDropDownResultsEl = $("#search-drop-down .scroll");
 
@@ -248,8 +261,8 @@ function loadSearchHistory() {
 // make-shift uvi color converter
 function calcUVIndexColor(uvi) {
     // colors to transition between (green being a safe uvi, red being bad)
-    const c_i = {r: 0, g: 255, b: 0};    // color initial
-    const c_f   = {r: 255, g: 0, b: 0};  // color final
+    const c_i = {r: 0, g: 255, b: 0};  // color initial
+    const c_f = {r: 255, g: 0, b: 0};  // color final
 
     const scale = uvi/7; // magic number 7 for big uvi
     const inv = (1 - scale);
@@ -336,6 +349,7 @@ function processSearchQuery(input, addToHistory=true) {
     );
 
     // loading animation on search bar
+    //$(searchFieldEl).attr("disabled", true);
     const waitInterval = gutil.whileInterval(2, 1, 500, num => {
         $(searchFieldEl).val(searchSettings.loadingMessage + ([".", "..", "..."])[num%3]);
     });
@@ -343,6 +357,7 @@ function processSearchQuery(input, addToHistory=true) {
     // cancel load animation when necessary
     function cancelLoadingAnim(message, refocus) {
         clearInterval(waitInterval);
+        //$(searchFieldEl).attr("disabled", false);
         $(searchFieldEl).val(message || "");
         if (refocus) $(searchFieldEl).focus();
     }
@@ -381,13 +396,15 @@ function processSearchQuery(input, addToHistory=true) {
             localWeatherData.icon = forecastData.current.weather[0].icon;
             localWeatherData.timezone = forecastData.timezone.replaceAll("_", " ");
 
-            console.log("uv color:", calcUVIndexColor(localWeatherData.uvi));
+            console.log("forecast:", forecastData);
 
             // update timezone data
-            currentTimezone = localWeatherData.timezone;
-            onClockTick();
+            clock.timezone = localWeatherData.timezone;
+            clock.timezoneOffset = forecastData.timezone_offset;
+            clock.update()
 
             // format weather data with degrees, mph, and %
+            console.log("current: ", localWeatherData);
             [
                 localWeatherData.temp, 
                 localWeatherData.windSpeed,
@@ -425,7 +442,6 @@ function processSearchQuery(input, addToHistory=true) {
 /* ------------------------ */
 
 function onSearchResultClicked(event) {
-    event.stopPropagation(); // prevent unnecessary event bubbling
     const target = event.target;
 
     if ($(target).hasClass("search-result-button")) {
@@ -451,12 +467,6 @@ function onSearchFocusLost(event) {
     $(searchDropDownEl).hide();
 }
 
-function onClockTick() {
-    const currentTime = new Date();
-    globalCurrentTime = currentTime;
-    $(currentTimeEl).text(currentTime.toLocaleString() + (currentTimezone ? ` (${currentTimezone})` : ""));
-}
-
 // initiate program
 // this function should only run once
 function init() {
@@ -464,13 +474,13 @@ function init() {
     loadHTMLElements();
 
     // immediately update global time
-    onClockTick();
+    clock.update();
 
     // show user a test search
     processSearchQuery("Raleigh, NC, US", false);
 
     // start clock tick event
-    setInterval(onClockTick, 1000);
+    setInterval(() => clock.update(), 1000);
 
     // connect event listeners
     $(searchDropDownEl).on("mousedown", onSearchResultClicked);
